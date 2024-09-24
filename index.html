@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Leave Time Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f8fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            max-width: 450px;
+            width: 90%;
+            height: 70%;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        input[type="time"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        iframe {
+            border: none;
+            width: 100%;
+            height: 40%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Office Leave Time Calculator</h2>
+
+        <iframe src="dist/index.html"></iframe>
+
+        <label for="start-time">Day Start Time:</label>
+        <input type="time" id="start-time" required>
+
+        <label for="work-hours">Intended Work Hours (HH:MM):</label>
+        <input type="time" id="work-hours" step="60" required>
+
+        <label for="break-hours">Break Hours (HH:MM):</label>
+        <input type="time" id="break-hours" step="60" required>
+
+        <button class="button" onclick="calculateLeaveTime()">Calculate Leave Time</button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function calculateLeaveTime() {
+            const startTimeInput = document.getElementById('start-time').value;
+            const workTimeInput = document.getElementById('work-hours').value;
+            const breakTimeInput = document.getElementById('break-hours').value;
+
+            if (!startTimeInput || !workTimeInput || !breakTimeInput) {
+                document.getElementById('result').textContent = 'Please fill in all the fields.';
+                return;
+            }
+
+            const [startHour, startMinute] = startTimeInput.split(':').map(Number);
+            const [workHour, workMinute] = workTimeInput.split(':').map(Number);
+            const [breakHour, breakMinute] = breakTimeInput.split(':').map(Number);
+
+            let startTime = new Date();
+            startTime.setHours(startHour, startMinute, 0);
+
+            const totalWorkMinutes = (workHour * 60) + workMinute;
+            const totalBreakMinutes = (breakHour * 60) + breakMinute;
+
+            startTime.setMinutes(startTime.getMinutes() + totalWorkMinutes + totalBreakMinutes);
+
+            const leaveHour = startTime.getHours();
+            const leaveMinute = startTime.getMinutes().toString().padStart(2, '0');
+            const formattedHour = (leaveHour < 10 ? '0' : '') + leaveHour;
+
+            document.getElementById('result').textContent = `You can leave the office at: ${formattedHour}:${leaveMinute}`;
+        }
+
+        function updateClock() {
+            const now = new Date();
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            // Update hours
+            updateFlipClock('hours', hours);
+
+            // Update minutes
+            updateFlipClock('minutes', minutes);
+
+            // Update seconds
+            updateFlipClock('seconds', seconds);
+        }
+
+        function updateFlipClock(unit, value) {
+            const top = document.getElementById(`${unit}-top`);
+            const bottom = document.getElementById(`${unit}-bottom`);
+            const newValue = value;
+
+            if (top.textContent !== newValue) {
+                top.classList.add('flipped');
+                bottom.classList.add('flipped');
+                setTimeout(() => {
+                    top.textContent = newValue;
+                    bottom.textContent = newValue;
+                    top.classList.remove('flipped');
+                    bottom.classList.remove('flipped');
+                }, 500);
+            }
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call to display the current time
+    </script>
+
+</body>
+
+</html>
