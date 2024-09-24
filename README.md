@@ -24,7 +24,7 @@ To run the Office Leave Time Calculator locally, follow these steps:
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ankitSingh1140/Office-Time-Calculator.git
 ## Screenshot
 
 Include a screenshot of the Office Leave Time Calculator below:
@@ -47,3 +47,9 @@ Contributions are welcome! To contribute to this project:
 2. Create a new branch for your feature or bug fix:
    ```bash
    git checkout -b my-feature-branch
+
+## License
+
+This project is licensed under the MIT License. 
+
+### MIT License
